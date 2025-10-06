@@ -1,0 +1,11 @@
+-r requirements.txt
+
+flake8==7.3.0
+mccabe==0.7.0
+pycodestyle==2.14.0
+pyflakes==3.4.0
+Pygments==2.19.2
+iniconfig==2.1.0
+pluggy==1.6.0
+pytest==8.4.2
+pytest-asyncio==1.2.0
