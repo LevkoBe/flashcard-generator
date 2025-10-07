@@ -81,4 +81,4 @@ def test_word_count_validation(client, test_set):
         "front_side": long_text, "back_side": "A", "position": 0
     })
     assert response.status_code == 422
-    assert "Must be <= 50 words" in response.text
+    assert "Must be ≤50 words" in response.text

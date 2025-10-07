@@ -1,17 +1,17 @@
+import os
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
 from app.main import app
 from app.database import Base, get_db
-from app.config import settings
+from dotenv import load_dotenv
 
-SQLALCHEMY_TEST_DATABASE_URL = settings.database_url.replace(
-    "flashcard_generator", "test_flashcard_generator"
-)
+load_dotenv()
 
-engine = create_engine(SQLALCHEMY_TEST_DATABASE_URL)
+TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
+
+engine = create_engine(TEST_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
