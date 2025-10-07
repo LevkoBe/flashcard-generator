@@ -68,3 +68,38 @@ flashcard-generator/
 ├── docs/               # Design and sketches
 └── .github/workflows/  # CI/CD configuration
 ```
+
+## Entity Relationship Diagram
+
+```mermaid
+erDiagram
+    TEST_SETS ||--o{ TEST_CARDS : contains
+    TEST_CARDS ||--o{ SCORES : tracks
+
+    TEST_SETS {
+        int id PK
+        varchar_255 title
+        varchar_10 source_type
+        text source_content
+        jsonb generation_params
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    TEST_CARDS {
+        int id PK
+        int test_set_id FK
+        text front_side
+        text back_side
+        int position
+        timestamp created_at
+    }
+
+    SCORES {
+        int id PK
+        int card_id FK
+        float score
+        text user_answer
+        timestamp scored_at
+    }
+```
