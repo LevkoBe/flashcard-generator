@@ -1,9 +1,6 @@
 from datetime import datetime
-from typing import Optional, Dict, Any, List, TYPE_CHECKING
-from pydantic import BaseModel, Field
-
-if TYPE_CHECKING:
-    from app.schemas.test_card import TestCardResponse
+from typing import Optional, Dict, Any
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class TestSetBase(BaseModel):
@@ -25,7 +22,5 @@ class TestSetResponse(TestSetBase):
     id: int
     created_at: datetime
     updated_at: datetime
-    cards: List["TestCardResponse"] = []
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

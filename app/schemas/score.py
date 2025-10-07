@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ScoreCreate(BaseModel):
@@ -14,8 +14,7 @@ class ScoreResponse(BaseModel):
     user_answer: Optional[str] = None
     scored_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ScoreResult(BaseModel):
