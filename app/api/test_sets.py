@@ -1,16 +1,30 @@
 from fastapi import Depends, APIRouter, HTTPException
+import httpx
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from typing import List
 from app.database import get_db
 from app.models import TestSet
 from app.schemas import TestSetCreate, TestSetResponse, TestSetUpdate
+from app.services.text_extractor import extract_text
 
 router = APIRouter()
 
 
 @router.post("/testset/", response_model=TestSetResponse, status_code=201)
-def create_test_set(test_set: TestSetCreate, db: Session = Depends(get_db)):
+async def create_test_set(test_set: TestSetCreate, db: Session = Depends(get_db)):
+    try:
+        # todo: AI-generation from extracted text
+        _ = await extract_text(
+            test_set.source_type,
+            test_set.source_content
+        )
+        print(_)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except httpx.HTTPError as e:
+        raise HTTPException(status_code=400, detail=f"Failed to fetch URL: {str(e)}")
+
     db_test_set = TestSet(**test_set.model_dump())
     db.add(db_test_set)
     db.commit()
