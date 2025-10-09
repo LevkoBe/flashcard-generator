@@ -4,9 +4,13 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 from typing import List
 from app.database import get_db
-from app.models import TestSet
+from app.models import TestSet, TestCard
 from app.schemas import TestSetCreate, TestSetResponse, TestSetUpdate
 from app.services.text_extractor import extract_text
+from app.services.flashcard_generator import generate_flashcards
+import json
+from google.api_core.exceptions import ResourceExhausted
+
 
 router = APIRouter()
 
@@ -14,19 +18,43 @@ router = APIRouter()
 @router.post("/testset/", response_model=TestSetResponse, status_code=201)
 async def create_test_set(test_set: TestSetCreate, db: Session = Depends(get_db)):
     try:
-        # todo: AI-generation from extracted text
-        _ = await extract_text(
+        extracted_text = await extract_text(
             test_set.source_type,
             test_set.source_content
         )
-        print(_)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except httpx.HTTPError as e:
         raise HTTPException(status_code=400, detail=f"Failed to fetch URL: {str(e)}")
 
+    params = test_set.generation_params or {}
+    guidance = params.get("guidance")
+    quantity = params.get("quantity")
+
+    try:
+        cards_data = await generate_flashcards(extracted_text, guidance, quantity)
+    except ResourceExhausted:
+        raise HTTPException(status_code=429, detail="AI service limit reached. Try again later")
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=500, detail="AI returned incorrect JSON format")
+    except ValueError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"AI service error: {str(e)}")
+
     db_test_set = TestSet(**test_set.model_dump())
     db.add(db_test_set)
+    db.flush()
+
+    for i, card_data in enumerate(cards_data):
+        db_card = TestCard(
+            test_set_id=db_test_set.id,
+            front_side=card_data["front"],
+            back_side=card_data["back"],
+            position=i
+        )
+        db.add(db_card)
+
     db.commit()
     db.refresh(db_test_set)
     return db_test_set
