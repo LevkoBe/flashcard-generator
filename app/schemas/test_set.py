@@ -1,6 +1,8 @@
 from datetime import datetime
-from typing import Optional, Dict, Any
+from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field, ConfigDict
+
+from app.schemas.test_card import TestCardResponse
 
 
 class TestSetBase(BaseModel):
@@ -22,5 +24,7 @@ class TestSetResponse(TestSetBase):
     id: int
     created_at: datetime
     updated_at: datetime
+    cards: List[TestCardResponse] = []
+    average_score: Optional[float] = None
 
     model_config = ConfigDict(from_attributes=True)
