@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import patch, AsyncMock, MagicMock
 from app.services.text_extractor import extract_text
+from app.services.score_calculator import calculate_similarity, is_correct
 from app.services.flashcard_generator import (
     generate_flashcards,
     _build_prompt,
@@ -47,6 +48,34 @@ class TestTextExtractor:
     async def test_extract_text_empty_text(self):
         result = await extract_text("text", "")
         assert result == ""
+
+
+class TestScoreCalculator:
+
+    def test_calculate_score_for_identical(self):
+        score_value = calculate_similarity("Exactly the same", "Exactly the same")
+        assert score_value == 1.0
+
+    def test_calculate_score_for_very_similar(self):
+        score_value = calculate_similarity("Exactly the same", "The same. Exactly!")
+        assert score_value > 0.9
+
+    def test_calculate_score_for_similar(self):
+        score_value = calculate_similarity("Exactly the same", "Exactly, The Sam")
+        assert score_value > 0.5
+        assert score_value < 1.0
+
+    def test_calculate_score_for_different(self):
+        score_value = calculate_similarity("Exactly the same", "Very much not so")
+        assert score_value < 0.5
+
+    def test_is_correct(self):
+        correct = is_correct(score=0.8, threshold=0.7)
+        assert correct
+
+    def test_is_not_correct(self):
+        correct = is_correct(score=0.6, threshold=0.7)
+        assert not correct
 
 
 class TestFlashcardGenerator:
