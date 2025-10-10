@@ -26,7 +26,7 @@ def create_score(
     ).scalar_one_or_none()
 
     if not card:
-        return HTTPException(status_code=500, detail="No card with the specified ID found.")
+        raise HTTPException(status_code=404, detail="No card with the specified ID found.")
 
     score_value = calculate_similarity(card.back_side, score_create.user_answer)
     correct = is_correct(score_value)
