@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, Text, ForeignKey, TIMESTAMP
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+from sqlalchemy.ext.hybrid import hybrid_property
 from app.database import Base
 
 
@@ -13,6 +14,12 @@ class TestCard(Base):
     back_side = Column(Text, nullable=False)
     position = Column(Integer, default=0)
     created_at = Column(TIMESTAMP, server_default=func.now())
+
+    @hybrid_property
+    def average_score(self):
+        if not self.scores:
+            return None
+        return sum(s.score for s in self.scores) / len(self.scores)
 
     test_set = relationship("TestSet", back_populates="cards")
     scores = relationship("Score", back_populates="card", cascade="all, delete-orphan")
