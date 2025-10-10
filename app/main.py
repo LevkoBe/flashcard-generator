@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import test_sets, test_cards
+from app.api import test_sets, test_cards, scores
 
 app = FastAPI()
 
@@ -14,6 +14,7 @@ app.add_middleware(
 
 app.include_router(test_sets.router, prefix="/api", tags=["test-sets"])
 app.include_router(test_cards.router, prefix="/api", tags=["test-cards"])
+app.include_router(scores.router, prefix="/api", tags=["scores"])
 
 
 @app.get("/")
