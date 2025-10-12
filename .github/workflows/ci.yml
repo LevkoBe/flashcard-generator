@@ -44,6 +44,7 @@ jobs:
       - name: Run tests
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_flashcard_generator
+          TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_flashcard_generator
           GEMINI_API_KEY: test_key
         run: |
           pytest tests/ -v
