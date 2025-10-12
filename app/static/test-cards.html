@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Test Cards</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="left-panel">
+        <h1>Test Cards</h1>
+        <div id="cards-grid" class="grid"></div>
+        <button class="btn" onclick="createCard()">Create</button>
+        <button class="btn" onclick="goBack()">Back</button>
+      </div>
+      <div class="right-panel">
+        <button class="btn" onclick="editCard()">Edit</button>
+        <button class="btn" onclick="testCard()">Test</button>
+        <button class="btn danger" onclick="deleteCard()">Delete</button>
+      </div>
+    </div>
+    <script src="./js/api.js"></script>
+    <script src="./js/testCards.js"></script>
+  </body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Card Test</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="left-panel test-view">
+        <h1>Test Mode</h1>
+        <div id="card-front" class="test-card"></div>
+        <input
+          id="answer-input"
+          type="text"
+          placeholder="Type your answer..."
+        />
+        <div id="result" class="result hidden"></div>
+      </div>
+      <div class="right-panel">
+        <button id="prev-btn" class="btn" onclick="previousCard()">
+          Previous
+        </button>
+        <button class="btn" onclick="submitAnswer()">Test</button>
+        <button id="next-btn" class="btn" onclick="nextCard()">Next</button>
+        <button class="btn danger" onclick="exitTest()">Exit</button>
+      </div>
+    </div>
+    <script src="./js/api.js"></script>
+    <script src="./js/cardTest.js"></script>
+  </body>
+</html>

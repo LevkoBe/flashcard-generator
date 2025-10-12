@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Flashcard Generator</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="left-panel">
+        <h1>Test Sets</h1>
+        <div id="test-sets-grid" class="grid"></div>
+        <button class="btn" onclick="createTestSet()">Create</button>
+      </div>
+      <div class="right-panel">
+        <button class="btn" onclick="editTestSet()">Edit</button>
+        <button class="btn" onclick="testTestSet()">Test</button>
+        <button class="btn danger" onclick="deleteTestSet()">Delete</button>
+      </div>
+    </div>
+    <script src="./js/api.js"></script>
+    <script src="./js/testSets.js"></script>
+  </body>
+</html>
