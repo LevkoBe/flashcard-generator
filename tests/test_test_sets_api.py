@@ -1,26 +1,3 @@
-import pytest
-
-
-@pytest.fixture
-def test_set(client):
-    response = client.post("/api/testset/", json={
-        "title": "Test Set",
-        "source_type": "text",
-        "source_content": "Content",
-        "generation_params": {}
-    })
-    return response.json()
-
-
-@pytest.fixture
-def test_card(client, test_set):
-    response = client.post(
-        f"/api/testset/{test_set['id']}/testcard/",
-        json={"front_side": "Q", "back_side": "A", "position": 0}
-    )
-    return response.json()
-
-
 def test_create_test_set(client):
     response = client.post("/api/testset/", json={
         "title": "New Set",
@@ -29,7 +6,9 @@ def test_create_test_set(client):
         "generation_params": {}
     })
     assert response.status_code == 201
-    assert response.json()["title"] == "New Set"
+    data = response.json()
+    assert data["title"] == "New Set"
+    assert len(data["cards"]) == 2
 
 
 def test_get_test_sets(client):

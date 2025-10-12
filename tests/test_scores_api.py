@@ -1,26 +1,3 @@
-import pytest
-
-
-@pytest.fixture
-def test_set(client):
-    response = client.post("/api/testset/", json={
-        "title": "Test Set",
-        "source_type": "text",
-        "source_content": "Content",
-        "generation_params": {}
-    })
-    return response.json()
-
-
-@pytest.fixture
-def test_card(client, test_set):
-    response = client.post(
-        f"/api/testset/{test_set['id']}/testcard/",
-        json={"front_side": "What do I say?", "back_side": "Correct answer", "position": 0}
-    )
-    return response.json()
-
-
 def test_create_perfect_score(client, test_set, test_card):
     response = client.post(f"/api/testset/{test_set['id']}/testcard/{test_card['id']}/score", json={
         "user_answer": "Correct answer",
@@ -38,7 +15,7 @@ def test_create_score_for_nonexistent_set(client):
 
 def test_create_imperfect_score(client, test_set, test_card):
     response = client.post(f"/api/testset/{test_set['id']}/testcard/{test_card['id']}/score", json={
-        "user_answer": "Imperfect answer",
+        "user_answer": "Nearly correct answer",
     })
     assert response.status_code == 201
     assert response.json()["correct"] is True

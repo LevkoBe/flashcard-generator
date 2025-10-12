@@ -1,26 +1,3 @@
-import pytest
-
-
-@pytest.fixture
-def test_set(client):
-    response = client.post("/api/testset/", json={
-        "title": "Test Set",
-        "source_type": "text",
-        "source_content": "Content",
-        "generation_params": {}
-    })
-    return response.json()
-
-
-@pytest.fixture
-def test_card(client, test_set):
-    response = client.post(
-        f"/api/testset/{test_set['id']}/testcard/",
-        json={"front_side": "Q", "back_side": "A", "position": 0}
-    )
-    return response.json()
-
-
 def test_create_test_card(client, test_set):
     response = client.post(f"/api/testset/{test_set['id']}/testcard/", json={
         "front_side": "Question",
@@ -40,6 +17,11 @@ def test_create_card_for_nonexistent_set(client):
 
 def test_get_test_cards(client, test_set):
     set_id = test_set['id']
+
+    existing_cards = client.get(f"/api/testset/{set_id}/testcard/").json()
+    for card in existing_cards:
+        client.delete(f"/api/testset/{set_id}/testcard/{card['id']}")
+
     client.post(
         f"/api/testset/{set_id}/testcard/",
         json={"front_side": "Q1", "back_side": "A1", "position": 0}
@@ -57,7 +39,7 @@ def test_get_test_cards(client, test_set):
 def test_get_test_card(client, test_card, test_set):
     response = client.get(f"/api/testset/{test_set['id']}/testcard/{test_card['id']}")
     assert response.status_code == 200
-    assert response.json()["front_side"] == "Q"
+    assert response.json()["front_side"] == "Mock question 1"
 
 
 def test_update_test_card(client, test_card, test_set):
