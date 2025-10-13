@@ -4,8 +4,10 @@ A learning app that generates mnemotechnic flashcards from any uploaded text.
 
 **Features:**
 
-- Upload text or a URL; in the latter case, extract the page's contents.
-- AI-generated mnemotechnic flashcards to study; each flashcard must not have more than 50 words.
+- Upload text or a URL; in the latter case, extract the page's contents
+- AI-generated mnemotechnic flashcards to study; each flashcard must not have more than 50 words
+- Test yourself with fuzzy-match scoring that accepts similar answers
+- Track your performance with score history
 
 ## Setup
 
@@ -35,10 +37,20 @@ pip install -r requirements.txt
 
 ```bash
 # Create database
-createdb flashcard_generator
+psql -U postgres -c "CREATE DATABASE flashcard_generator;"
 
 # Run migrations
 alembic upgrade head
+```
+
+### Run Application
+
+```bash
+# Start FastAPI server
+uvicorn app.main:app --reload
+
+# Access web interface
+# Open browser to http://localhost:8000
 ```
 
 ### Run Tests
@@ -53,6 +65,25 @@ pytest tests/ -v
 flake8 app/ tests/
 ```
 
+## Usage
+
+1. **Create Test Set:** Upload text or URL on the home page
+2. **View Cards:** Browse generated flashcards in the test set
+3. **Test Yourself:** Click "Test" to practice with scoring
+
+## API Endpoints
+
+- `POST /api/testset/` - Create test set from text/URL
+- `GET /api/testset/` - List all test sets
+- `GET /api/testset/{id}` - Get specific test set with cards
+- `PUT /api/testset/{id}` - Update test set title
+- `DELETE /api/testset/{id}` - Delete test set
+- `POST /api/testset/{id}/testcard/` - Add card manually
+- `GET /api/testset/{id}/testcard/` - List cards in set
+- `PUT /api/testset/{id}/testcard/{card_id}` - Edit card
+- `DELETE /api/testset/{id}/testcard/{card_id}` - Delete card
+- `POST /api/testset/{id}/testcard/{card_id}/score` - Submit answer for scoring
+
 ## Project Structure
 
 ```
@@ -61,7 +92,8 @@ flashcard-generator/
 │   ├── models/         # SQLAlchemy database models
 │   ├── schemas/        # Pydantic validation schemas
 │   ├── api/            # FastAPI route handlers
-│   ├── services/       # Business logic
+│   ├── services/       # Business logic (AI, scoring, extraction)
+│   ├── static/         # Frontend HTML/CSS/JS
 │   └── utils/          # Helper functions
 ├── tests/              # Tests
 ├── alembic/            # Database migrations
@@ -103,3 +135,11 @@ erDiagram
         timestamp scored_at
     }
 ```
+
+## Technology Stack
+
+- **Backend:** FastAPI, SQLAlchemy, PostgreSQL
+- **AI:** Google Gemini 2.0 Flash
+- **Scoring:** RapidFuzz (fuzzy string matching)
+- **Text Extraction:** Trafilatura
+- **Frontend:** Vanilla JavaScript, HTML5, CSS3
