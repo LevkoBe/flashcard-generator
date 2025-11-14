@@ -2,7 +2,23 @@
 
 A learning app that generates mnemotechnic flashcards from any uploaded text.
 
-**Features:**
+**Navigation**
+- [Introduction](#flashcard-generator)
+- [Features](#features)
+- [Setup](#setup)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Database Setup](#database-setup)
+  - [Run Application](#run-application)
+  - [Run Tests](#run-tests)
+  - [Lint Code](#lint-code)
+- [Usage](#usage)
+- [API Endpoints](#api-endpoints)
+- [Project Structure](#project-structure)
+- [Entity Relationship Diagram](#entity-relationship-diagram)
+- [Technology Stack](#technology-stack)
+
+## Features
 
 - Upload text or a URL; in the latter case, extract the page's contents
 - AI-generated mnemotechnic flashcards to study; each flashcard must not have more than 50 words
